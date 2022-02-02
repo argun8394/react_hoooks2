@@ -1,7 +1,7 @@
 import React from 'react';
 import cw from "../assets/cw_logo.png";
 
-const Header =({img})=>{
+const Header =React.memo(({img})=>{//Header componentinin fuzuli render olmasını önlemek için React.memo kullandık
     console.log("Rendering : Header Comp!");
     return(
         <div className="header">
@@ -11,6 +11,6 @@ const Header =({img})=>{
             />
         </div>
     )
-};
+});
 
 export default Header;

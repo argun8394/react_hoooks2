@@ -1,6 +1,6 @@
 import logo from './logo.svg';
 import './App.css';
-import React, {useState,useEffect, useMemo} from 'react';
+import React, {useState,useEffect, useMemo,useCallback} from 'react';
 import Header from "./components/Header";
 import List from "./components/List";
 import aws from "./assets/aws.png";
@@ -33,13 +33,15 @@ function App() {
 
   const filteredStudent=useMemo(()=> studentsList.filter(student=>{{/*useMemo ile hafızaya atılan değeri search etmiş olduk ve her tuşlamada render işleminin önüne geçmiş olduk */}
     return student.name.toLowerCase().includes(search.toLowerCase())
-  }),[search, studentsList])//useMemo ya dependeci vermemiz gerekir doğru çalışması için
+  }),[search, studentsList])//useMemo ya dependeci vermemiz gerekir doğru çalışması için, gereksiz renderı engelledik sadece istrediğimizde çalışır ve hafızaya atılan değeri döndürdük 
 
-
+const add = useCallback(()=>{{/*useCallback kullandığımız fonksiyonu hafızaya alıp dependeci array değişince tekrar hesaplayıp tekrar hafızaya alıyor,sürekli renderı önlüyor */}
+  setStudentsList([...studentsList, {id: studentsList.length + 1, name:"Edward CW"},]);
+},[studentsList]);
 
   return (
     <div className="App">
-       <Header img={img}/> {/*props ile componentte değişiklik yaparsak useMemo ya rağmen render olur   */}
+       <Header img={img}/> {/*props ile componentte değişiklik yaparsak React.Memo ya rağmen render olur   */}
       <p>counter : {counter}</p>
       <button onClick={()=>setCounter(counter+1)}>Increase</button>
       <button onClick={()=>setImg(fs)}>fs</button>
@@ -49,7 +51,7 @@ function App() {
       <input type="text" value={text} onChange={handleText} />
       <button onClick={handleSearch}>Search</button>
       {/* <List students={studentsList}/> */}
-      <List students={filteredStudent}/>
+      <List students={filteredStudent} add={add}/>
 
      
     </div>
